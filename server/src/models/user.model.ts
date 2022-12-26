@@ -1,9 +1,12 @@
+import { NextFunction } from "express";
 import mongoose from "mongoose";
-
+import bcrypt from 'bcrypt'
 export interface UserDocument extends mongoose.Document {
   name: string;
   email: string;
   password: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 const userSchema = new mongoose.Schema({
@@ -22,9 +25,17 @@ const userSchema = new mongoose.Schema({
   }
 },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
+    timestamps: true
   },
 );
+
+userSchema.pre("save", async function (next) {
+  let user = this as UserDocument;
+  const salt = await bcrypt.genSalt();
+  user.password = await bcrypt.hash(user.password, salt)
+  next();
+});
+
 
 const UserModel = mongoose.model('User', userSchema);
 

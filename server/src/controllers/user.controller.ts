@@ -8,13 +8,14 @@ export interface UserController {
 }
 
 const userCtrl: UserController = {
-  createUser: async (user: DocumentDefinition<UserDocument>) => {
+  createUser: async (user: DocumentDefinition<UserDocument>): Promise<UserDocument> => {
     try {
       const newUser = await UserModel.create({
         name: user.name,
         email: user.password,
         password: user.password
       });
+      return newUser
     } catch (error: any) {
       throw new Error(error.message);
     }

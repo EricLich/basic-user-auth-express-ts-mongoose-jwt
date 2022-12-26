@@ -34,12 +34,16 @@ app.get('/users', async (req: Request, res: Response, next: NextFunction): Promi
 
 app.post('/users', emptyChecker, async (req: TypedRequestBody<{ name: string, email: string, password: string }>, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await userCtrl.createUser({ name: req.body.name, email: req.body.email, password: req.body.password });
-    res.send('User created').status(200);
+    const newUser = await userCtrl.createUser({ name: req.body.name, email: req.body.email, password: req.body.password });
+    res.send({ newUser }).status(200);
   } catch (err) {
     res.send('There was an error creating user').status(400);
   }
 });
+
+/* app.post('/login', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+}) */
 
 app.delete('/users/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
